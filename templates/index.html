@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puzzle Feed Generator</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">◆</span>
+      <h1>Puzzle Feed Generator</h1>
+    </div>
+    <p class="subtitle">Ubah fotomu jadi puzzle feed interaktif &mdash; mainkan, lalu unduh potongannya.</p>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ===================== UPLOAD PANEL ===================== -->
+    <section class="panel upload-panel" id="uploadPanel">
+
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.webp" hidden>
+        <div class="dropzone-content" id="dropzoneContent">
+          <span class="dropzone-icon">⤒</span>
+          <p class="dropzone-title">Seret &amp; lepas gambar di sini</p>
+          <p class="dropzone-sub">atau klik untuk memilih file</p>
+          <p class="dropzone-hint">PNG, JPG, JPEG, WEBP &middot; Maks 10MB</p>
+        </div>
+        <img id="previewImg" class="preview-img" hidden alt="Preview gambar">
+      </div>
+
+      <div class="controls-row">
+        <div class="control-group">
+          <label for="gridSelect">Ukuran Grid</label>
+          <select id="gridSelect">
+            {% for n in range(min_grid, max_grid + 1) %}
+            <option value="{{ n }}" {% if n == 3 %}selected{% endif %}>{{ n }} x {{ n }} ({{ n * n }} potongan)</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button id="generateBtn" class="btn btn-primary" disabled>
+          <span id="generateBtnText">Buat Puzzle</span>
+        </button>
+      </div>
+
+      <p class="error-msg" id="errorMsg" hidden></p>
+    </section>
+
+    <!-- ===================== GAME PANEL ===================== -->
+    <section class="panel game-panel" id="gamePanel" hidden>
+
+      <div class="game-toolbar">
+        <button id="newPuzzleBtn" class="btn btn-ghost">← Puzzle Baru</button>
+
+        <div class="toolbar-right">
+          <button id="peekBtn" class="btn btn-ghost">👁 Intip</button>
+          <button id="downloadBtn" class="btn btn-secondary">⬇ Unduh ZIP</button>
+        </div>
+      </div>
+
+      <div class="board-wrapper">
+        <div id="puzzleBoard" class="puzzle-board"></div>
+        <img id="peekOverlay" class="peek-overlay" hidden alt="Gambar asli">
+      </div>
+
+      <p class="game-hint">Klik dua potongan untuk menukar posisi, atau seret satu ke potongan lain.</p>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>Dibuat dengan Flask &amp; Pillow</p>
+  </footer>
+
+</div>
+
+<!-- ===================== WIN MODAL (SEJAJAR / SIBLING) ===================== -->
+<div class="modal-backdrop" id="winModal" hidden>
+  <div class="modal-card">
+    <div class="modal-icon">🎉</div>
+    <h2>Selamat!</h2>
+    <p>Kamu berhasil menyusun puzzle dengan sempurna.</p>
+    <div class="modal-actions">
+      <button id="modalPlayAgainBtn" class="btn btn-primary">Main Lagi</button>
+      <button id="modalDownloadBtn" class="btn btn-secondary">Unduh ZIP</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LOADING OVERLAY (SEJAJAR / SIBLING) ===================== -->
+<div class="loading-overlay" id="loadingOverlay" hidden>
+  <div class="spinner"></div>
+  <p id="loadingText">Memproses gambar...</p>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
